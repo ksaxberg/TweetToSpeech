@@ -14,8 +14,18 @@ access_token_secret=tokens.access_token_secret)
 last_id = 0L 
 while(1):
 	time.sleep(10)
-	msgs = api.GetDirectMessages(count=5)
+	msgs = api.GetDirectMessages(count=2)
+	if len(msgs) == 0:
+		continue
 	latest = msgs[0].AsDict()
+	if len(msgs) == 1:
+		if latest[u'id'] == last_id:
+			"do nothing"
+			continue
+		else:
+			last_id = latest[u'id']
+			say("Message from {} says: {}".format(latest[u'sender'][u'name'], latest[u'text']))
+			continue
 	second_latest = msgs[1].AsDict()	
 	if latest[u'id'] == last_id:
 		"do nothing"
