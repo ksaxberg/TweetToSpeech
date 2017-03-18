@@ -13,7 +13,7 @@ access_token_secret=tokens.access_token_secret)
 #print(api.VerifyCredentials())
 last_id = 0L 
 while(1):
-	time.sleep(10)
+	time.sleep(60)
 	msgs = api.GetDirectMessages(count=2)
 	if len(msgs) == 0:
 		continue
