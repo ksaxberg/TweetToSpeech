@@ -1,0 +1,16 @@
+Tweet To Speech
+
+Quick list of dependencies:
+	Any Linux os
+	espeak - installed and callable from command line
+
+	Python dependencies:
+		python-twitter - pip package
+		
+External requirements:
+	A twitter App with API access. More information here:
+		https://dev.twitter.com/oauth/overview/application-owner-access-tokens
+	Place the appropriate tokens in the fields of tokens.py
+
+Design:
+	Will check DM's for updates and read the latest direct messages, up to 2 to prevent spam.
