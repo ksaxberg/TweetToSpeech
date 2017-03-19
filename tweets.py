@@ -10,7 +10,7 @@ def mentions(api, last_id=0L):
 	else:
 		msgs = api.GetMentions(count=5)
 	if len(msgs) == 0:
-		continue
+		return last_id
 	for msg in [x.AsDict() for x in msgs[::-1]]:
 		say("Mention from {} says: {}".format(msg[u'sender'][u'name'], msg[u'text']))
 		
@@ -24,7 +24,7 @@ def directMessages(api, last_id=0L):
 	else:
 		msgs = api.GetDirectMessages(count=3)
 	if len(msgs) == 0:
-		continue
+		return last_id
 	for msg in [x.AsDict() for x in msgs[::-1]]:
 		say("Message from {} says: {}".format(msg[u'sender'][u'name'], msg[u'text']))
 	latest = msgs[0].AsDict()
@@ -46,7 +46,7 @@ if __name__== "__main__":
 	dm_count = 0
 	while(True):
 		time.sleep(16)
-		mentions(api, last_mention)
+		last_mention = mentions(api, last_mention)
 		if dm_count == 3:
-			directMessages(api, last_dm)
+			last_dm = directMessages(api, last_dm)
 		dm_count = (dm_count + 1) % 4
