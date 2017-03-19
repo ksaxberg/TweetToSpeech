@@ -4,39 +4,43 @@ import twitter
 import tokens
 from speech1 import speechify as say
 
-api = twitter.Api(
-consumer_key=tokens.consumer_key,
-consumer_secret=tokens.consumer_secret,
-access_token_key=tokens.access_token_key,
-access_token_secret=tokens.access_token_secret)
-
-#print(api.VerifyCredentials())
-last_id = 0L 
-while(1):
-	time.sleep(61)
-	msgs = api.GetDirectMessages(count=2)
-	if len(msgs) == 0:
-		continue
-	latest = msgs[0].AsDict()
-	if len(msgs) == 1:
-		if latest[u'id'] == last_id:
-			"do nothing"
-			continue
+def mentions(api):
+	last_id = 0L 
+	while(True):
+		time.sleep(61)
+		if last_id != 0L:
+			msgs = api.GetMentions(count=5, since_id=last_id)
 		else:
-			last_id = latest[u'id']
-			say("Message from {} says: {}".format(latest[u'sender'][u'name'], latest[u'text']))
+			msgs = api.GetMentions(count=5)
+		if len(msgs) == 0:
 			continue
-	second_latest = msgs[1].AsDict()	
-	if latest[u'id'] == last_id:
-		"do nothing"
-		continue
-	elif second_latest[u'id'] == last_id:
-		# Process latest message
+		for msg in [x.AsDict() for x in msgs[::-1]]:
+			say("Mention from {} says: {}".format(msg[u'sender'][u'name'], msg[u'text']))
+			
+		latest = msgs[0].AsDict()
 		last_id = latest[u'id']
-		say("Message from {} says: {}".format(latest[u'sender'][u'name'], latest[u'text']))
-	else :
-		# Process 2 new messages
+
+def directMessages(api):
+	last_id = 0L 
+	while(True):
+		time.sleep(61)
+		if last_id != 0L:
+			msgs = api.GetDirectMessages(count=3, since_id=last_id)
+		else:
+			msgs = api.GetDirectMessages(count=3)
+		if len(msgs) == 0:
+			continue
+		for msg in [x.AsDict() for x in msgs[::-1]]:
+			say("Message from {} says: {}".format(msg[u'sender'][u'name'], msg[u'text']))
+		latest = msgs[0].AsDict()
 		last_id = latest[u'id']
-		say("Message from {} says: {}".format(second_latest[u'sender'][u'name'], second_latest[u'text']))
-		say("Message from {} says: {}".format(latest[u'sender'][u'name'], latest[u'text']))
-		
+			
+if __name__== "__main__":
+	api = twitter.Api(
+	consumer_key=tokens.consumer_key,
+	consumer_secret=tokens.consumer_secret,
+	access_token_key=tokens.access_token_key,
+	access_token_secret=tokens.access_token_secret)
+	
+	#print(api.VerifyCredentials())
+	directMessages(api)
